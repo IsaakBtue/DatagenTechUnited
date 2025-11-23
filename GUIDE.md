@@ -106,6 +106,19 @@ This ensures the package uses the updated code with all SMPLX dimension fixes.
 
 ### Step 4: Download GVHMR Checkpoints
 
+**Option A - Automatic (Recommended):**
+
+```bash
+./download_checkpoints.sh
+```
+
+This script will:
+- Install `gdown` if needed
+- Download all GVHMR checkpoints (~10GB)
+- Verify downloads automatically
+
+**Option B - Manual:**
+
 Download from: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
 
 **Required files:**
