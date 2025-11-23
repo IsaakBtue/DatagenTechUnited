@@ -26,11 +26,13 @@ fi
 # Create all necessary directories
 mkdir -p GVHMR/inputs/checkpoints/{gvhmr,hmr2,vitpose,yolo,dpvo}
 mkdir -p GVHMR/inputs/checkpoints/body_models/{smpl,smplx}
+mkdir -p data
 
 echo -e "${GREEN}This script will download ALL required models:${NC}"
 echo ""
 echo "  1. Body Models (SMPL/SMPL-X) - ~500MB"
-echo "  2. GVHMR Checkpoints - ~10GB"
+echo "  2. Sample Video (intercept1.mp4) - ~50MB"
+echo "  3. GVHMR Checkpoints - ~10GB"
 echo ""
 echo "Total download size: ~10.5GB"
 echo ""
@@ -45,64 +47,86 @@ fi
 
 echo ""
 echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Step 1/2: Downloading Body Models${NC}"
+echo -e "${BLUE}  Step 1/3: Downloading Body Models & Sample Video${NC}"
 echo -e "${BLUE}=================================================${NC}"
 echo ""
 
-# Download body_models folder
-echo -e "${BLUE}Downloading SMPL/SMPL-X body models...${NC}"
-cd GVHMR/inputs/checkpoints
+# Download body_models folder and sample video
+echo -e "${BLUE}Downloading from Google Drive...${NC}"
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
+
 if gdown --folder "https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q57d82mKCVkn0" --remaining-ok 2>&1; then
     echo ""
+    echo -e "${GREEN}✓ Download completed!${NC}"
+    echo ""
+    echo -e "${BLUE}Organizing files...${NC}"
     
-    # Move body_models folder content if needed
-    if [ -d "body_models" ]; then
-        echo -e "${GREEN}✓ Body models downloaded!${NC}"
+    # Find and move the body_models folder (it might be in a subfolder created by gdown)
+    BODY_MODELS_DIR=$(find . -type d -name "body_models" | head -n 1)
+    if [ -n "$BODY_MODELS_DIR" ]; then
+        # Copy the entire body_models directory structure
+        cp -r "$BODY_MODELS_DIR"/* "$SCRIPT_DIR/GVHMR/inputs/checkpoints/body_models/"
+        echo -e "${GREEN}✓${NC} Body models organized"
     else
-        # Try to find and organize body_models files
-        find . -name "SMPL*.pkl" -exec mv {} body_models/smpl/ \; 2>/dev/null || true
-        find . -name "SMPL*.npz" -exec mv {} body_models/smplx/ \; 2>/dev/null || true
+        # Fallback: find individual SMPL files
+        find . -name "SMPL*.pkl" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/body_models/smpl/" \; 2>/dev/null || true
+        find . -name "SMPL*.npz" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/body_models/smplx/" \; 2>/dev/null || true
+        echo -e "${YELLOW}⚠${NC} Body models organized (fallback method)"
     fi
+    
+    # Find and move the sample video
+    SAMPLE_VIDEO=$(find . -name "intercept1.mp4" -o -name "Intercept1.mp4" | head -n 1)
+    if [ -n "$SAMPLE_VIDEO" ]; then
+        cp "$SAMPLE_VIDEO" "$SCRIPT_DIR/data/intercept1.mp4"
+        echo -e "${GREEN}✓${NC} Sample video moved to data/intercept1.mp4"
+    fi
+    
 else
-    echo -e "${YELLOW}⚠ Automatic download may need manual completion${NC}"
+    echo -e "${YELLOW}⚠ Automatic download encountered issues${NC}"
 fi
 
+# Clean up temp directory
 cd "$SCRIPT_DIR"
+rm -rf "$TEMP_DIR"
 
 echo ""
 echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Step 2/2: Downloading GVHMR Checkpoints${NC}"
+echo -e "${BLUE}  Step 2/3: Downloading GVHMR Checkpoints${NC}"
 echo -e "${BLUE}=================================================${NC}"
 echo ""
 
 # Download GVHMR checkpoints
 echo -e "${BLUE}Downloading GVHMR checkpoint files...${NC}"
-cd GVHMR/inputs/checkpoints
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
 
 if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD" --remaining-ok 2>&1; then
     echo ""
+    echo -e "${GREEN}✓ Download completed!${NC}"
+    echo ""
+    echo -e "${BLUE}Organizing files...${NC}"
     
-    # Move files to correct locations if they were downloaded to wrong places
-    find . -name "gvhmr_siga24_release.ckpt" -exec mv {} gvhmr/ \; 2>/dev/null || true
-    find . -name "epoch=10-step=25000.ckpt" -exec mv {} hmr2/ \; 2>/dev/null || true
-    find . -name "vitpose-h-multi-coco.pth" -exec mv {} vitpose/ \; 2>/dev/null || true
-    find . -name "yolov8x.pt" -exec mv {} yolo/ \; 2>/dev/null || true
-    find . -name "dpvo.pth" -exec mv {} dpvo/ \; 2>/dev/null || true
+    # Find and move checkpoint files
+    find . -name "gvhmr_siga24_release.ckpt" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/gvhmr/" \; 2>/dev/null || true
+    find . -name "epoch=10-step=25000.ckpt" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/hmr2/" \; 2>/dev/null || true
+    find . -name "vitpose-h-multi-coco.pth" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/vitpose/" \; 2>/dev/null || true
+    find . -name "yolov8x.pt" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/yolo/" \; 2>/dev/null || true
+    find . -name "dpvo.pth" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/dpvo/" \; 2>/dev/null || true
     
-    # Clean up any extra directories created by gdown
-    find . -type d -empty -delete 2>/dev/null || true
-    
-    echo -e "${GREEN}✓ Checkpoints downloaded!${NC}"
+    echo -e "${GREEN}✓${NC} Checkpoints organized"
 else
     echo -e "${YELLOW}⚠ Automatic download encountered issues${NC}"
 fi
 
+# Clean up temp directory
 cd "$SCRIPT_DIR"
+rm -rf "$TEMP_DIR"
 
 # Verify all downloads
 echo ""
 echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Verifying Downloads${NC}"
+echo -e "${BLUE}  Step 3/3: Verifying Downloads${NC}"
 echo -e "${BLUE}=================================================${NC}"
 echo ""
 
@@ -133,6 +157,10 @@ check_file "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_FEMALE.pkl" "SMPL"
 check_file "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz" "SMPL-X"
 check_file "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_MALE.npz" "SMPL-X"
 check_file "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_FEMALE.npz" "SMPL-X"
+
+echo ""
+echo "Sample Video:"
+check_file "data/intercept1.mp4" "Video"
 
 echo ""
 echo "GVHMR Checkpoints:"
@@ -170,9 +198,10 @@ else
        [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz" ] || \
        [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_MALE.npz" ] || \
        [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_FEMALE.npz" ]; then
-        echo "Body Models:"
+        echo "Body Models & Sample Video:"
         echo "  Visit: https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q57d82mKCVkn0"
-        echo "  Download the body_models folder and place in: GVHMR/inputs/checkpoints/"
+        echo "  Download the body_models folder → place in: GVHMR/inputs/checkpoints/"
+        echo "  Download intercept1.mp4 → place in: data/"
         echo ""
     fi
     

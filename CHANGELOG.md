@@ -1,6 +1,44 @@
 # Changelog
 
-## November 23, 2025 - v1.1.1 (Latest)
+## November 23, 2025 - v2.0 (Latest)
+
+### 🚀 Major Changes
+
+#### Complete Automation
+- **Fully automated downloads:** `download_checkpoints.sh` now downloads ALL models
+- Downloads SMPL/SMPL-X body models automatically from Google Drive
+- Downloads sample video (intercept1.mp4) for immediate testing
+- No more manual model registration or downloads!
+
+#### Single Documentation File
+- **Consolidated docs:** All documentation now in single README.md
+- Removed GUIDE.md - everything in one place
+- Clear 4-step workflow: setup → download → verify → run
+- Simpler, cleaner, easier to follow
+
+#### Enhanced Download Script
+- Improved file organization - properly handles Google Drive folder structure
+- Downloads to temp directory first, then organizes files
+- Better handling of nested folders from gdown
+- Automatic sample video placement in `data/` folder
+- Enhanced verification with file size display
+
+### 📚 Documentation
+- Complete rewrite of README.md - comprehensive single-file guide
+- Removed GUIDE.md (consolidated into README.md)
+- Added detailed troubleshooting section
+- Clearer project structure visualization
+- Better examples and use cases
+
+### ✅ Workflow
+1. `./setup_environment.sh` - Setup environment
+2. `./download_checkpoints.sh` - Download everything (~10.5GB)
+3. `./verify_installation.sh` - Verify setup
+4. `./run_pipeline.sh --video data/intercept1.mp4` - Process sample video
+
+---
+
+## November 23, 2025 - v1.1.1
 
 ### 🐛 Bug Fixes
 
