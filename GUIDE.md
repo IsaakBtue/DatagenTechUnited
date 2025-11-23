@@ -106,26 +106,33 @@ This ensures the package uses the updated code with all SMPLX dimension fixes.
 
 ### Step 4: Download GVHMR Checkpoints
 
-**Option A - Automatic (Recommended):**
+**Option A - Try Automatic Download First:**
 
 ```bash
 ./download_checkpoints.sh
 ```
 
-This script will:
+The script will:
 - Install `gdown` if needed
-- Download all GVHMR checkpoints (~10GB)
-- Verify downloads automatically
+- Attempt to download all files from the Google Drive folder
+- Find and organize downloaded files into correct directories
+- Show you exactly which files were successfully downloaded
+- Provide specific instructions for any files that need manual download
 
-**Option B - Manual:**
+💡 **Pro Tip:** Before running the script, open the [Google Drive folder](https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD) in your browser. If automatic download misses any files, you can quickly download them manually!
 
-Download from: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
+**Why might automatic download fail for some files?**
+Google Drive's folder structure with subfolders doesn't always work perfectly with automated tools. The script does its best, but you may need to manually download 1-2 files.
 
-**Required files:**
-- `gvhmr_siga24_release.ckpt` → `GVHMR/inputs/checkpoints/gvhmr/`
-- `epoch=10-step=25000.ckpt` → `GVHMR/inputs/checkpoints/hmr2/`
-- `vitpose-h-multi-coco.pth` → `GVHMR/inputs/checkpoints/vitpose/`
-- `yolov8x.pt` → `GVHMR/inputs/checkpoints/yolo/`
+**Option B - Manual Download (If Needed):**
+
+Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
+
+Navigate into each subfolder and download:
+- From `gvhmr/` folder → download `gvhmr_siga24_release.ckpt` → place in `GVHMR/inputs/checkpoints/gvhmr/`
+- From `hmr2/` folder → download `epoch=10-step=25000.ckpt` → place in `GVHMR/inputs/checkpoints/hmr2/`
+- From `vitpose/` folder → download `vitpose-h-multi-coco.pth` → place in `GVHMR/inputs/checkpoints/vitpose/`
+- From `yolo/` folder → download `yolov8x.pt` → place in `GVHMR/inputs/checkpoints/yolo/`
 
 **Final checkpoint structure:**
 ```

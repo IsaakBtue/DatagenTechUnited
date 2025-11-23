@@ -41,19 +41,24 @@ cd DatagenTechUnited
 
 3. **GVHMR Checkpoints** (4 files - ~10GB):
    
-   **Option A - Automatic (Recommended):**
+   **Option A - Try Automatic First:**
    ```bash
    ./download_checkpoints.sh
    ```
-   This script will attempt to download all checkpoints automatically using `gdown`.
+   The script will:
+   - Attempt to download all files from Google Drive
+   - Show which files were successfully downloaded
+   - Tell you exactly which files (if any) need manual download
    
-   **Option B - Manual:**
-   - Download from: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
-   - Files needed:
-     - `gvhmr_siga24_release.ckpt` → `GVHMR/inputs/checkpoints/gvhmr/`
-     - `epoch=10-step=25000.ckpt` → `GVHMR/inputs/checkpoints/hmr2/`
-     - `vitpose-h-multi-coco.pth` → `GVHMR/inputs/checkpoints/vitpose/`
-     - `yolov8x.pt` → `GVHMR/inputs/checkpoints/yolo/`
+   💡 **Tip:** Have the Google Drive folder open in your browser while running this, so you can quickly grab any files it misses!
+   
+   **Option B - Manual Download:**
+   - Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
+   - Navigate into each subfolder and download:
+     - From `gvhmr/` → `gvhmr_siga24_release.ckpt` → place in `GVHMR/inputs/checkpoints/gvhmr/`
+     - From `hmr2/` → `epoch=10-step=25000.ckpt` → place in `GVHMR/inputs/checkpoints/hmr2/`
+     - From `vitpose/` → `vitpose-h-multi-coco.pth` → place in `GVHMR/inputs/checkpoints/vitpose/`
+     - From `yolo/` → `yolov8x.pt` → place in `GVHMR/inputs/checkpoints/yolo/`
 
 **Why manual?** See `MODEL_LICENSING.md` for licensing details.
 

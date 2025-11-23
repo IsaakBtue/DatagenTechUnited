@@ -82,39 +82,107 @@ download_file() {
     return 1
 }
 
-# Try to download the entire folder (may require manual intervention)
-echo "Attempting to download from Google Drive folder..."
-echo "Note: If this fails, you'll need to download files manually."
+# Download each checkpoint from its respective subfolder
+echo "Downloading checkpoints from Google Drive..."
+echo "Note: Each file will be downloaded from its specific folder."
 echo ""
 
-# Try using gdown to download the entire folder
+# We'll try to download from each subfolder in the shared Google Drive
+# Main folder: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
+BASE_FOLDER="1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
+
+download_success=0
+download_failed=0
+
+# Try to download the entire folder structure with all subfolders
+echo -e "${BLUE}Attempting to download all files...${NC}"
 cd GVHMR/inputs/checkpoints
-if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD" 2>&1 | tee /tmp/gdown_output.txt; then
+
+# Try downloading the folder with all contents recursively
+if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD" --remaining-ok 2>&1; then
     echo ""
+    
+    # Move files to correct locations if they were downloaded to wrong places
+    # Sometimes gdown downloads to a subfolder with the Drive folder name
+    
+    # Find and move files to correct locations
+    find . -name "gvhmr_siga24_release.ckpt" -exec mv {} gvhmr/ \; 2>/dev/null || true
+    find . -name "epoch=10-step=25000.ckpt" -exec mv {} hmr2/ \; 2>/dev/null || true
+    find . -name "vitpose-h-multi-coco.pth" -exec mv {} vitpose/ \; 2>/dev/null || true
+    find . -name "yolov8x.pt" -exec mv {} yolo/ \; 2>/dev/null || true
+    find . -name "dpvo.pth" -exec mv {} dpvo/ \; 2>/dev/null || true
+    
+    # Clean up any extra directories created by gdown
+    find . -type d -empty -delete 2>/dev/null || true
+    
     echo -e "${GREEN}✓ Download completed!${NC}"
 else
     echo ""
-    echo -e "${YELLOW}⚠ Automatic download failed or requires manual authentication.${NC}"
+    echo -e "${YELLOW}⚠ Automatic download encountered issues.${NC}"
+    echo "  This is normal for Google Drive shared folders."
     echo ""
-    echo "Please download manually:"
-    echo ""
-    echo "1. Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
-    echo ""
-    echo "2. Download these files and place them in the correct directories:"
-    echo ""
-    echo "   Required files:"
-    echo "   ├─ gvhmr_siga24_release.ckpt → GVHMR/inputs/checkpoints/gvhmr/"
-    echo "   ├─ epoch=10-step=25000.ckpt → GVHMR/inputs/checkpoints/hmr2/"
-    echo "   ├─ vitpose-h-multi-coco.pth → GVHMR/inputs/checkpoints/vitpose/"
-    echo "   ├─ yolov8x.pt → GVHMR/inputs/checkpoints/yolo/"
-    echo "   └─ dpvo.pth → GVHMR/inputs/checkpoints/dpvo/ (optional)"
-    echo ""
-    echo "3. After downloading, verify with: ./verify_installation.sh"
-    cd "$SCRIPT_DIR"
-    exit 1
 fi
 
 cd "$SCRIPT_DIR"
+
+# Check what we managed to download
+echo ""
+echo -e "${BLUE}Checking downloaded files...${NC}"
+echo ""
+
+files_to_check=(
+    "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt"
+    "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt"
+    "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth"
+    "GVHMR/inputs/checkpoints/yolo/yolov8x.pt"
+)
+
+for file_path in "${files_to_check[@]}"; do
+    if [ -f "$file_path" ]; then
+        file_size=$(du -h "$file_path" | cut -f1)
+        file_name=$(basename "$file_path")
+        echo -e "${GREEN}✓${NC} $file_name ($file_size)"
+        ((download_success++))
+    else
+        file_name=$(basename "$file_path")
+        echo -e "${RED}✗${NC} $file_name (missing)"
+        ((download_failed++))
+    fi
+done
+
+# If any files are missing, provide manual instructions
+if [ $download_failed -gt 0 ]; then
+    echo ""
+    echo -e "${YELLOW}=================================================${NC}"
+    echo -e "${YELLOW}  Some files need to be downloaded manually${NC}"
+    echo -e "${YELLOW}=================================================${NC}"
+    echo ""
+    echo "Please complete the download manually:"
+    echo ""
+    echo "1. Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
+    echo ""
+    echo "2. Navigate into each subfolder and download the files:"
+    echo ""
+    
+    [ ! -f "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt" ] && \
+        echo "   gvhmr/ folder → Download gvhmr_siga24_release.ckpt → GVHMR/inputs/checkpoints/gvhmr/"
+    
+    [ ! -f "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt" ] && \
+        echo "   hmr2/ folder → Download epoch=10-step=25000.ckpt → GVHMR/inputs/checkpoints/hmr2/"
+    
+    [ ! -f "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth" ] && \
+        echo "   vitpose/ folder → Download vitpose-h-multi-coco.pth → GVHMR/inputs/checkpoints/vitpose/"
+    
+    [ ! -f "GVHMR/inputs/checkpoints/yolo/yolov8x.pt" ] && \
+        echo "   yolo/ folder → Download yolov8x.pt → GVHMR/inputs/checkpoints/yolo/"
+    
+    echo ""
+    echo "3. Optional: dpvo/dpvo.pth (for advanced features)"
+    echo ""
+    echo "4. After downloading, verify with: ./verify_installation.sh"
+    echo ""
+    exit 1
+fi
 
 # Verify downloads
 echo ""
