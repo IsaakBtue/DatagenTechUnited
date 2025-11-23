@@ -18,8 +18,8 @@ Extracts human motion from videos and retargets it to the Booster T1 humanoid ro
 
 ### Step 1: Setup (One-Time)
 ```bash
-git clone <YOUR_REPO>/Techunited-DataGeneration
-cd Techunited-DataGeneration
+git clone https://github.com/IsaakBtue/DatagenTechUnited.git
+cd DatagenTechUnited
 ./setup_environment.sh
 ```
 
