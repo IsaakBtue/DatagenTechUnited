@@ -1,6 +1,5 @@
 #!/bin/bash
-# Download GVHMR checkpoints from Google Drive
-# Note: SMPL/SMPL-X models CANNOT be downloaded automatically due to licensing
+# Download all required models and checkpoints from Google Drive
 
 set -e
 
@@ -11,7 +10,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  GVHMR Checkpoint Downloader${NC}"
+echo -e "${BLUE}  Complete Model & Checkpoint Downloader${NC}"
 echo -e "${BLUE}=================================================${NC}"
 echo ""
 
@@ -24,13 +23,16 @@ if ! command -v gdown &> /dev/null; then
     pip install gdown -q
 fi
 
-# Create checkpoint directories
+# Create all necessary directories
 mkdir -p GVHMR/inputs/checkpoints/{gvhmr,hmr2,vitpose,yolo,dpvo}
+mkdir -p GVHMR/inputs/checkpoints/body_models/{smpl,smplx}
 
-echo -e "${GREEN}Starting GVHMR checkpoint downloads...${NC}"
+echo -e "${GREEN}This script will download ALL required models:${NC}"
 echo ""
-echo "This will download approximately 10GB of model files."
-echo "Source: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
+echo "  1. Body Models (SMPL/SMPL-X) - ~500MB"
+echo "  2. GVHMR Checkpoints - ~10GB"
+echo ""
+echo "Total download size: ~10.5GB"
 echo ""
 
 # Ask for confirmation
@@ -38,74 +40,49 @@ read -p "Continue with download? (y/N): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "Download cancelled."
-    echo ""
-    echo "To download manually:"
-    echo "  1. Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
-    echo "  2. Download these files:"
-    echo "     - gvhmr_siga24_release.ckpt → GVHMR/inputs/checkpoints/gvhmr/"
-    echo "     - epoch=10-step=25000.ckpt → GVHMR/inputs/checkpoints/hmr2/"
-    echo "     - vitpose-h-multi-coco.pth → GVHMR/inputs/checkpoints/vitpose/"
-    echo "     - yolov8x.pt → GVHMR/inputs/checkpoints/yolo/"
-    echo "     - dpvo.pth → GVHMR/inputs/checkpoints/dpvo/ (optional)"
     exit 0
 fi
 
 echo ""
-echo -e "${BLUE}Downloading checkpoints from Google Drive...${NC}"
+echo -e "${BLUE}=================================================${NC}"
+echo -e "${BLUE}  Step 1/2: Downloading Body Models${NC}"
+echo -e "${BLUE}=================================================${NC}"
 echo ""
 
-# Function to download with progress
-download_file() {
-    local file_id="$1"
-    local output_path="$2"
-    local file_name=$(basename "$output_path")
+# Download body_models folder
+echo -e "${BLUE}Downloading SMPL/SMPL-X body models...${NC}"
+cd GVHMR/inputs/checkpoints
+if gdown --folder "https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q57d82mKCVkn0" --remaining-ok 2>&1; then
+    echo ""
     
-    if [ -f "$output_path" ]; then
-        echo -e "${YELLOW}⚠${NC} $file_name already exists, skipping..."
-        return 0
+    # Move body_models folder content if needed
+    if [ -d "body_models" ]; then
+        echo -e "${GREEN}✓ Body models downloaded!${NC}"
+    else
+        # Try to find and organize body_models files
+        find . -name "SMPL*.pkl" -exec mv {} body_models/smpl/ \; 2>/dev/null || true
+        find . -name "SMPL*.npz" -exec mv {} body_models/smplx/ \; 2>/dev/null || true
     fi
-    
-    echo -e "${BLUE}Downloading $file_name...${NC}"
-    
-    # Try to download using gdown
-    if gdown "https://drive.google.com/uc?id=$file_id" -O "$output_path" 2>&1; then
-        if [ -f "$output_path" ]; then
-            file_size=$(du -h "$output_path" | cut -f1)
-            echo -e "${GREEN}✓${NC} Downloaded $file_name ($file_size)"
-            return 0
-        fi
-    fi
-    
-    echo -e "${RED}✗${NC} Failed to download $file_name"
-    echo "    Please download manually from:"
-    echo "    https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
-    return 1
-}
+else
+    echo -e "${YELLOW}⚠ Automatic download may need manual completion${NC}"
+fi
 
-# Download each checkpoint from its respective subfolder
-echo "Downloading checkpoints from Google Drive..."
-echo "Note: Each file will be downloaded from its specific folder."
+cd "$SCRIPT_DIR"
+
+echo ""
+echo -e "${BLUE}=================================================${NC}"
+echo -e "${BLUE}  Step 2/2: Downloading GVHMR Checkpoints${NC}"
+echo -e "${BLUE}=================================================${NC}"
 echo ""
 
-# We'll try to download from each subfolder in the shared Google Drive
-# Main folder: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
-BASE_FOLDER="1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
-
-download_success=0
-download_failed=0
-
-# Try to download the entire folder structure with all subfolders
-echo -e "${BLUE}Attempting to download all files...${NC}"
+# Download GVHMR checkpoints
+echo -e "${BLUE}Downloading GVHMR checkpoint files...${NC}"
 cd GVHMR/inputs/checkpoints
 
-# Try downloading the folder with all contents recursively
 if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD" --remaining-ok 2>&1; then
     echo ""
     
     # Move files to correct locations if they were downloaded to wrong places
-    # Sometimes gdown downloads to a subfolder with the Drive folder name
-    
-    # Find and move files to correct locations
     find . -name "gvhmr_siga24_release.ckpt" -exec mv {} gvhmr/ \; 2>/dev/null || true
     find . -name "epoch=10-step=25000.ckpt" -exec mv {} hmr2/ \; 2>/dev/null || true
     find . -name "vitpose-h-multi-coco.pth" -exec mv {} vitpose/ \; 2>/dev/null || true
@@ -115,114 +92,100 @@ if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW
     # Clean up any extra directories created by gdown
     find . -type d -empty -delete 2>/dev/null || true
     
-    echo -e "${GREEN}✓ Download completed!${NC}"
+    echo -e "${GREEN}✓ Checkpoints downloaded!${NC}"
 else
-    echo ""
-    echo -e "${YELLOW}⚠ Automatic download encountered issues.${NC}"
-    echo "  This is normal for Google Drive shared folders."
-    echo ""
+    echo -e "${YELLOW}⚠ Automatic download encountered issues${NC}"
 fi
 
 cd "$SCRIPT_DIR"
 
-# Check what we managed to download
+# Verify all downloads
 echo ""
-echo -e "${BLUE}Checking downloaded files...${NC}"
-echo ""
-
-files_to_check=(
-    "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt"
-    "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt"
-    "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth"
-    "GVHMR/inputs/checkpoints/yolo/yolov8x.pt"
-)
-
-for file_path in "${files_to_check[@]}"; do
-    if [ -f "$file_path" ]; then
-        file_size=$(du -h "$file_path" | cut -f1)
-        file_name=$(basename "$file_path")
-        echo -e "${GREEN}✓${NC} $file_name ($file_size)"
-        ((download_success++))
-    else
-        file_name=$(basename "$file_path")
-        echo -e "${RED}✗${NC} $file_name (missing)"
-        ((download_failed++))
-    fi
-done
-
-# If any files are missing, provide manual instructions
-if [ $download_failed -gt 0 ]; then
-    echo ""
-    echo -e "${YELLOW}=================================================${NC}"
-    echo -e "${YELLOW}  Some files need to be downloaded manually${NC}"
-    echo -e "${YELLOW}=================================================${NC}"
-    echo ""
-    echo "Please complete the download manually:"
-    echo ""
-    echo "1. Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
-    echo ""
-    echo "2. Navigate into each subfolder and download the files:"
-    echo ""
-    
-    [ ! -f "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt" ] && \
-        echo "   gvhmr/ folder → Download gvhmr_siga24_release.ckpt → GVHMR/inputs/checkpoints/gvhmr/"
-    
-    [ ! -f "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt" ] && \
-        echo "   hmr2/ folder → Download epoch=10-step=25000.ckpt → GVHMR/inputs/checkpoints/hmr2/"
-    
-    [ ! -f "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth" ] && \
-        echo "   vitpose/ folder → Download vitpose-h-multi-coco.pth → GVHMR/inputs/checkpoints/vitpose/"
-    
-    [ ! -f "GVHMR/inputs/checkpoints/yolo/yolov8x.pt" ] && \
-        echo "   yolo/ folder → Download yolov8x.pt → GVHMR/inputs/checkpoints/yolo/"
-    
-    echo ""
-    echo "3. Optional: dpvo/dpvo.pth (for advanced features)"
-    echo ""
-    echo "4. After downloading, verify with: ./verify_installation.sh"
-    echo ""
-    exit 1
-fi
-
-# Verify downloads
-echo ""
-echo -e "${BLUE}Verifying downloaded files...${NC}"
+echo -e "${BLUE}=================================================${NC}"
+echo -e "${BLUE}  Verifying Downloads${NC}"
+echo -e "${BLUE}=================================================${NC}"
 echo ""
 
-files_ok=true
+download_success=0
+download_failed=0
 
 check_file() {
     local file_path="$1"
     local file_name=$(basename "$file_path")
+    local category="$2"
     
     if [ -f "$file_path" ]; then
         file_size=$(du -h "$file_path" | cut -f1)
-        echo -e "${GREEN}✓${NC} $file_name ($file_size)"
+        echo -e "${GREEN}✓${NC} [$category] $file_name ($file_size)"
+        ((download_success++))
     else
-        echo -e "${RED}✗${NC} $file_name (missing)"
-        files_ok=false
+        echo -e "${RED}✗${NC} [$category] $file_name (missing)"
+        ((download_failed++))
+        return 1
     fi
+    return 0
 }
 
-check_file "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt"
-check_file "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt"
-check_file "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth"
-check_file "GVHMR/inputs/checkpoints/yolo/yolov8x.pt"
+echo "Body Models:"
+check_file "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_NEUTRAL.pkl" "SMPL"
+check_file "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_MALE.pkl" "SMPL"
+check_file "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_FEMALE.pkl" "SMPL"
+check_file "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz" "SMPL-X"
+check_file "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_MALE.npz" "SMPL-X"
+check_file "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_FEMALE.npz" "SMPL-X"
 
-if [ "$files_ok" = true ]; then
+echo ""
+echo "GVHMR Checkpoints:"
+check_file "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt" "GVHMR"
+check_file "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt" "HMR2"
+check_file "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth" "VitPose"
+check_file "GVHMR/inputs/checkpoints/yolo/yolov8x.pt" "YOLO"
+
+echo ""
+
+# Final status
+if [ $download_failed -eq 0 ]; then
+    echo -e "${GREEN}=================================================${NC}"
+    echo -e "${GREEN}  ✓ All models downloaded successfully!${NC}"
+    echo -e "${GREEN}=================================================${NC}"
     echo ""
-    echo -e "${GREEN}=================================================${NC}"
-    echo -e "${GREEN}  All checkpoints downloaded successfully! ✓${NC}"
-    echo -e "${GREEN}=================================================${NC}"
+    echo "Downloaded: $download_success files"
     echo ""
     echo "Next step: Run ./verify_installation.sh"
+    exit 0
 else
-    echo ""
     echo -e "${YELLOW}=================================================${NC}"
-    echo -e "${YELLOW}  Some files are missing${NC}"
+    echo -e "${YELLOW}  ⚠ Some files need manual download${NC}"
     echo -e "${YELLOW}=================================================${NC}"
     echo ""
-    echo "Please download missing files from:"
-    echo "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
+    echo "Success: $download_success files"
+    echo "Missing: $download_failed files"
+    echo ""
+    echo "Manual download instructions:"
+    echo ""
+    
+    if [ ! -f "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_NEUTRAL.pkl" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_MALE.pkl" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_FEMALE.pkl" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_MALE.npz" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_FEMALE.npz" ]; then
+        echo "Body Models:"
+        echo "  Visit: https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q57d82mKCVkn0"
+        echo "  Download the body_models folder and place in: GVHMR/inputs/checkpoints/"
+        echo ""
+    fi
+    
+    if [ ! -f "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth" ] || \
+       [ ! -f "GVHMR/inputs/checkpoints/yolo/yolov8x.pt" ]; then
+        echo "GVHMR Checkpoints:"
+        echo "  Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
+        echo "  Download missing checkpoint files to their respective folders"
+        echo ""
+    fi
+    
+    echo "After downloading missing files, run: ./verify_installation.sh"
     exit 1
 fi

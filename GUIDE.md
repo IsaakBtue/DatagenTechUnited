@@ -74,27 +74,9 @@ pip install -e .
 conda install -c conda-forge libstdcxx-ng -y
 ```
 
-### Step 3: Download Body Models
+### Step 3: Reinstall GMR (Important!)
 
-**🎯 IMPORTANT:** All body models go in ONE location: `GVHMR/inputs/checkpoints/body_models/`
-
-Both GVHMR and GMR now use the same checkpoint location, so you don't need to copy files to multiple places!
-
-**SMPLX Models** (required):
-1. Sign up at: https://smpl-x.is.tue.mpg.de/
-2. Download: SMPLX_NEUTRAL.npz, SMPLX_MALE.npz, SMPLX_FEMALE.npz
-3. Place in: `GVHMR/inputs/checkpoints/body_models/smplx/`
-
-**SMPL Models** (required):
-1. Sign up at: https://smpl.is.tue.mpg.de/
-2. Download: SMPL_NEUTRAL.pkl, SMPL_MALE.pkl, SMPL_FEMALE.pkl
-3. Place in: `GVHMR/inputs/checkpoints/body_models/smpl/`
-
-**✅ Simplified:** No more duplicate copying! Old versions required files in both `GVHMR/inputs/checkpoints/body_models/smplx/` AND `assets/body_models/smplx/`. Now everything uses one location.
-
-### Step 3b: Reinstall GMR (Important!)
-
-After downloading the body models, reinstall GMR to ensure all fixes are applied:
+After setup, reinstall GMR to ensure all fixes are applied:
 
 ```bash
 conda activate gmr
@@ -104,35 +86,25 @@ pip install -e .
 
 This ensures the package uses the updated code with all SMPLX dimension fixes.
 
-### Step 4: Download GVHMR Checkpoints
+### Step 4: Download All Models & Checkpoints
 
-**Option A - Try Automatic Download First:**
+Download everything you need (~10.5GB total) with one command:
 
 ```bash
 ./download_checkpoints.sh
 ```
 
+The script will automatically download:
+- ✅ SMPL/SMPL-X body models (~500MB)
+- ✅ GVHMR checkpoints (~10GB)
+- ✅ Detection models (YOLO, VitPose, HMR2)
+
 The script will:
 - Install `gdown` if needed
-- Attempt to download all files from the Google Drive folder
-- Find and organize downloaded files into correct directories
-- Show you exactly which files were successfully downloaded
-- Provide specific instructions for any files that need manual download
-
-💡 **Pro Tip:** Before running the script, open the [Google Drive folder](https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD) in your browser. If automatic download misses any files, you can quickly download them manually!
-
-**Why might automatic download fail for some files?**
-Google Drive's folder structure with subfolders doesn't always work perfectly with automated tools. The script does its best, but you may need to manually download 1-2 files.
-
-**Option B - Manual Download (If Needed):**
-
-Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
-
-Navigate into each subfolder and download:
-- From `gvhmr/` folder → download `gvhmr_siga24_release.ckpt` → place in `GVHMR/inputs/checkpoints/gvhmr/`
-- From `hmr2/` folder → download `epoch=10-step=25000.ckpt` → place in `GVHMR/inputs/checkpoints/hmr2/`
-- From `vitpose/` folder → download `vitpose-h-multi-coco.pth` → place in `GVHMR/inputs/checkpoints/vitpose/`
-- From `yolo/` folder → download `yolov8x.pt` → place in `GVHMR/inputs/checkpoints/yolo/`
+- Download all files from Google Drive
+- Organize files into correct directories
+- Show download status for each file
+- Provide manual instructions if any downloads fail
 
 **Final checkpoint structure:**
 ```

@@ -25,42 +25,18 @@ cd DatagenTechUnited
 
 ### Step 2: Download Models (One-Time)
 
-**⚠️ IMPORTANT:** SMPL/SMPL-X models **cannot be included in GitHub** due to licensing restrictions.
+Download all required models and checkpoints (~10.5GB):
 
-**Required downloads:**
+```bash
+./download_checkpoints.sh
+```
 
-1. **SMPL-X Models** (3 files):
-   - Register at: https://smpl-x.is.tue.mpg.de/
-   - Download: `SMPLX_NEUTRAL.npz`, `SMPLX_MALE.npz`, `SMPLX_FEMALE.npz`
-   - Place in: `GVHMR/inputs/checkpoints/body_models/smplx/`
+This will automatically download:
+- ✅ SMPL/SMPL-X body models (~500MB)
+- ✅ GVHMR checkpoints (~10GB)
+- ✅ All detection models (YOLO, VitPose, etc.)
 
-2. **SMPL Models** (3 files):
-   - Register at: https://smpl.is.tue.mpg.de/
-   - Download: `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl`, `SMPL_FEMALE.pkl`
-   - Place in: `GVHMR/inputs/checkpoints/body_models/smpl/`
-
-3. **GVHMR Checkpoints** (4 files - ~10GB):
-   
-   **Option A - Try Automatic First:**
-   ```bash
-   ./download_checkpoints.sh
-   ```
-   The script will:
-   - Attempt to download all files from Google Drive
-   - Show which files were successfully downloaded
-   - Tell you exactly which files (if any) need manual download
-   
-   💡 **Tip:** Have the Google Drive folder open in your browser while running this, so you can quickly grab any files it misses!
-   
-   **Option B - Manual Download:**
-   - Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
-   - Navigate into each subfolder and download:
-     - From `gvhmr/` → `gvhmr_siga24_release.ckpt` → place in `GVHMR/inputs/checkpoints/gvhmr/`
-     - From `hmr2/` → `epoch=10-step=25000.ckpt` → place in `GVHMR/inputs/checkpoints/hmr2/`
-     - From `vitpose/` → `vitpose-h-multi-coco.pth` → place in `GVHMR/inputs/checkpoints/vitpose/`
-     - From `yolo/` → `yolov8x.pt` → place in `GVHMR/inputs/checkpoints/yolo/`
-
-**Why manual?** See `MODEL_LICENSING.md` for licensing details.
+The script will show you which files were successfully downloaded and provide instructions for any files that need manual download.
 
 ### Step 3: Verify (One-Time)
 ```bash
@@ -109,8 +85,6 @@ Options:
 
 📚 **[GUIDE.md](GUIDE.md)** - Complete setup and usage guide
 
-⚠️ **[MODEL_LICENSING.md](MODEL_LICENSING.md)** - Why models can't be in GitHub (important!)
-
 📋 **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates
 
 **GUIDE.md includes:**
@@ -130,7 +104,7 @@ Options:
 ✅ All necessary scripts  
 ✅ Automated setup  
 
-**What to download:** SMPL/SMPL-X models + GVHMR checkpoints (see Quick Start above)
+**What to download:** All models included in automated download script
 
 ---
 
