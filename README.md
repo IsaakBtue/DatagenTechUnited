@@ -91,6 +91,65 @@ The script will:
 - Verify all downloads
 - Show what's missing (if anything)
 
+<details>
+<summary><b>📋 Manual Installation (Click to expand)</b></summary>
+
+If the automatic download script doesn't work, you can download files manually:
+
+#### 1. Body Models & Sample Video
+
+Visit: https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q57d82mKCVkn0
+
+Download and place:
+- **body_models folder** → Extract to `GVHMR/inputs/checkpoints/`
+  - Should contain `smpl/` and `smplx/` subfolders
+  - `smpl/` should have: `SMPL_NEUTRAL.pkl`, `SMPL_MALE.pkl`, `SMPL_FEMALE.pkl`
+  - `smplx/` should have: `SMPLX_NEUTRAL.npz`, `SMPLX_MALE.npz`, `SMPLX_FEMALE.npz`
+- **intercept1.mp4** → Place in `data/` folder
+
+#### 2. GVHMR Checkpoints
+
+Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD
+
+Navigate into each subfolder and download:
+- From **gvhmr/** folder → `gvhmr_siga24_release.ckpt` → place in `GVHMR/inputs/checkpoints/gvhmr/`
+- From **hmr2/** folder → `epoch=10-step=25000.ckpt` → place in `GVHMR/inputs/checkpoints/hmr2/`
+- From **vitpose/** folder → `vitpose-h-multi-coco.pth` → place in `GVHMR/inputs/checkpoints/vitpose/`
+- From **yolo/** folder → `yolov8x.pt` → place in `GVHMR/inputs/checkpoints/yolo/`
+- From **dpvo/** folder → `dpvo.pth` → place in `GVHMR/inputs/checkpoints/dpvo/` (optional)
+
+#### 3. Final Directory Structure
+
+After manual download, your structure should look like:
+
+```
+GVHMR/inputs/checkpoints/
+├── body_models/
+│   ├── smpl/
+│   │   ├── SMPL_NEUTRAL.pkl
+│   │   ├── SMPL_MALE.pkl
+│   │   └── SMPL_FEMALE.pkl
+│   └── smplx/
+│       ├── SMPLX_NEUTRAL.npz
+│       ├── SMPLX_MALE.npz
+│       └── SMPLX_FEMALE.npz
+├── gvhmr/
+│   └── gvhmr_siga24_release.ckpt
+├── hmr2/
+│   └── epoch=10-step=25000.ckpt
+├── vitpose/
+│   └── vitpose-h-multi-coco.pth
+└── yolo/
+    └── yolov8x.pt
+
+data/
+└── intercept1.mp4
+```
+
+After manual download, run `./verify_installation.sh` to check everything is in place.
+
+</details>
+
 ### Step 3: Verify Installation
 
 Check that everything is installed correctly:
