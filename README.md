@@ -6,6 +6,24 @@ Transform any video of human movement into robot motion data for the Booster T1 
 
 ---
 
+## 🎬 Demo Videos
+
+See the pipeline in action - from human video to robot motion:
+
+### Example 1: Human Pose Extraction + Robot Retargeting
+
+[▶️ Watch: GVHMR Pose Extraction + Robot Retargeting](assets/booster_t1/booster_t1_hmr4d_results.mp4)
+
+*GVHMR extracts human pose, GMR retargets to Booster T1*
+
+### Example 2: Complex Motion - Full Pipeline
+
+[▶️ Watch: Dynamic Human Movement → Robot Motion](assets/booster_t1/Intercept4_3_incam_global_horiz.mp4)
+
+*Human performing dynamic movement → Robot motion visualization in MuJoCo*
+
+---
+
 ## Quick Start (4 Commands)
 
 ```bash

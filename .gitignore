@@ -172,6 +172,10 @@ $RECYCLE.BIN/
 *.mp4
 *.avi
 *.mov
+
+# Exception: Allow demo videos in assets
+!assets/booster_t1/*.mp4
+
 !data/.gitkeep
 !videos/.gitkeep
 !outputs/.gitkeep
