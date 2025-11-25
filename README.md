@@ -10,17 +10,22 @@ Transform any video of human movement into robot motion data for the Booster T1 
 
 See the pipeline in action - from human video to robot motion:
 
-### Example 1: Human Pose Extraction + Robot Retargeting
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <b>Demo 1: Pose Extraction + Retargeting</b><br>
+      GVHMR extracts human pose, GMR retargets to Booster T1<br><br>
+      <video src="assets/booster_t1/booster_t1_hmr4d_results.mp4" width="100%" controls></video>
+    </td>
+    <td align="center" width="50%">
+      <b>Demo 2: Complex Motion Pipeline</b><br>
+      Human performing dynamic movement → Robot motion in MuJoCo<br><br>
+      <video src="assets/booster_t1/Intercept4_3_incam_global_horiz.mp4" width="100%" controls></video>
+    </td>
+  </tr>
+</table>
 
-[▶️ Watch: GVHMR Pose Extraction + Robot Retargeting](assets/booster_t1/booster_t1_hmr4d_results.mp4)
-
-*GVHMR extracts human pose, GMR retargets to Booster T1*
-
-### Example 2: Complex Motion - Full Pipeline
-
-[▶️ Watch: Dynamic Human Movement → Robot Motion](assets/booster_t1/Intercept4_3_incam_global_horiz.mp4)
-
-*Human performing dynamic movement → Robot motion visualization in MuJoCo*
+> **Note:** For videos to play directly in GitHub, upload them via [GitHub Issues](https://github.com/IsaakBtue/DatagenTechUnited/issues/new) to get `user-attachments` URLs, then replace the URLs above.
 
 ---
 
