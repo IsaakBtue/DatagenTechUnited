@@ -80,6 +80,69 @@ The script will:
 - Install all required dependencies
 - Takes ~10-15 minutes
 
+<details>
+<summary><b>📋 Manual Environment Setup (Click to expand)</b></summary>
+
+If the automatic setup script doesn't work, you can set up the environment manually:
+
+#### 1. Create Conda Environment
+
+```bash
+conda create -n gmr python=3.10 -y
+conda activate gmr
+```
+
+#### 2. Install PyTorch with CUDA
+
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+Or visit [PyTorch website](https://pytorch.org/get-started/locally/) for your specific CUDA version.
+
+#### 3. Install GVHMR
+
+```bash
+cd GVHMR
+pip install -r requirements.txt
+pip install -e .
+cd ..
+```
+
+#### 4. Install GMR
+
+```bash
+pip install -e .
+```
+
+#### 5. Install Additional Dependencies
+
+```bash
+conda install -c conda-forge libstdcxx-ng -y
+```
+
+#### 6. Reinstall GMR (Important!)
+
+After everything is installed, reinstall GMR to ensure all fixes are applied:
+
+```bash
+pip uninstall general-motion-retargeting -y
+pip install -e .
+```
+
+#### 7. Verify Installation
+
+```bash
+conda activate gmr
+python -c "import torch; print('PyTorch:', torch.__version__, 'CUDA:', torch.cuda.is_available())"
+python -c "import smplx; print('SMPLX installed')"
+python -c "import mujoco; print('MuJoCo installed')"
+```
+
+All imports should succeed and CUDA should be available (True).
+
+</details>
+
 ### Step 2: Download Models
 
 Download all required models and checkpoints:
