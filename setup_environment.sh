@@ -32,7 +32,7 @@ echo -e "${GREEN}✓ Conda found${NC}"
 echo ""
 
 # Check if environment already exists
-ENV_NAME="gmr"
+ENV_NAME="HumanoidDataGeneration"
 if conda env list | grep -q "^${ENV_NAME} "; then
     echo -e "${YELLOW}⚠ Environment '${ENV_NAME}' already exists${NC}"
     read -p "Do you want to remove it and recreate? (y/N): " -n 1 -r

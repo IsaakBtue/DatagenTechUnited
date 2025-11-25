@@ -6,9 +6,9 @@ echo "  Fixing Dependency Conflicts"
 echo "=================================================="
 echo ""
 
-# Activate gmr environment
+# Activate HumanoidDataGeneration environment
 eval "$(conda shell.bash hook)"
-conda activate gmr
+conda activate HumanoidDataGeneration
 
 echo "Removing conflicting packages..."
 pip uninstall transformers huggingface-hub -y

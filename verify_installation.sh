@@ -36,11 +36,11 @@ check_warn() {
 
 # 1. Check conda environment
 echo "1. Checking conda environment..."
-if conda env list | grep -q "^gmr "; then
-    check_pass "Environment 'gmr' exists"
+if conda env list | grep -q "^HumanoidDataGeneration "; then
+    check_pass "Environment 'HumanoidDataGeneration' exists"
 else
-    check_fail "Environment 'gmr' not found"
-    echo "      Create it with: conda create -y -n gmr python=3.10"
+    check_fail "Environment 'HumanoidDataGeneration' not found"
+    echo "      Create it with: conda create -y -n HumanoidDataGeneration python=3.10"
 fi
 
 # Try to activate environment
@@ -56,7 +56,7 @@ else
         source "$CONDA_BASE/etc/profile.d/conda.sh"
     fi
 fi
-conda activate gmr 2>/dev/null
+conda activate HumanoidDataGeneration 2>/dev/null
 
 # 2. Check Python version
 echo ""

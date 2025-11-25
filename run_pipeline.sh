@@ -107,8 +107,8 @@ print_info "Record Video: $RECORD_VIDEO"
 print_info "===================================================="
 
 # Auto-activate conda environment
-if [[ "$CONDA_DEFAULT_ENV" != "gmr" ]]; then
-    print_info "Activating 'gmr' conda environment..."
+if [[ "$CONDA_DEFAULT_ENV" != "HumanoidDataGeneration" ]]; then
+    print_info "Activating 'HumanoidDataGeneration' conda environment..."
     
     # Initialize conda for bash shell
     if [ -f "$HOME/miniforge3/etc/profile.d/conda.sh" ]; then
@@ -124,16 +124,16 @@ if [[ "$CONDA_DEFAULT_ENV" != "gmr" ]]; then
             source "$CONDA_BASE/etc/profile.d/conda.sh"
         else
             print_error "Could not find conda installation"
-            print_error "Please activate manually: conda activate gmr"
+            print_error "Please activate manually: conda activate HumanoidDataGeneration"
             exit 1
         fi
     fi
     
-    conda activate gmr
+    conda activate HumanoidDataGeneration
     
-    if [[ "$CONDA_DEFAULT_ENV" != "gmr" ]]; then
-        print_error "Failed to activate 'gmr' environment"
-        print_error "Please run: conda activate gmr"
+    if [[ "$CONDA_DEFAULT_ENV" != "HumanoidDataGeneration" ]]; then
+        print_error "Failed to activate 'HumanoidDataGeneration' environment"
+        print_error "Please run: conda activate HumanoidDataGeneration"
         exit 1
     fi
     

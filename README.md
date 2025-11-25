@@ -55,7 +55,7 @@ Takes a video of a human performing an action and generates:
 
 ## Requirements
 
-- **OS:** Ubuntu 20.04/22.04 (Linux)
+- **OS:** Ubuntu 22.04 (Linux)
 - **Python:** 3.10
 - **GPU:** NVIDIA GPU with 8GB+ VRAM (CUDA 12.1+)
 - **Conda:** Miniconda or Anaconda
@@ -74,7 +74,7 @@ This creates the conda environment and installs all dependencies:
 ```
 
 The script will:
-- Create a conda environment named `gmr` with Python 3.10
+- Create a conda environment named `HumanoidDataGeneration` with Python 3.10
 - Install PyTorch with CUDA support
 - Install GVHMR and GMR libraries
 - Install all required dependencies
@@ -88,8 +88,8 @@ If the automatic setup script doesn't work, you can set up the environment manua
 #### 1. Create Conda Environment
 
 ```bash
-conda create -n gmr python=3.10 -y
-conda activate gmr
+conda create -n HumanoidDataGeneration python=3.10 -y
+conda activate HumanoidDataGeneration
 ```
 
 #### 2. Install PyTorch with CUDA
@@ -133,7 +133,7 @@ pip install -e .
 #### 7. Verify Installation
 
 ```bash
-conda activate gmr
+conda activate HumanoidDataGeneration
 python -c "import torch; print('PyTorch:', torch.__version__, 'CUDA:', torch.cuda.is_available())"
 python -c "import smplx; print('SMPLX installed')"
 python -c "import mujoco; print('MuJoCo installed')"
