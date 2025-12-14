@@ -4,14 +4,12 @@
 set -e
 
 GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Complete Model & Checkpoint Downloader${NC}"
-echo -e "${BLUE}=================================================${NC}"
+echo "================================================="
+echo "  Complete Model & Checkpoint Downloader"
+echo "================================================="
 echo ""
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -19,7 +17,7 @@ cd "$SCRIPT_DIR"
 
 # Check if gdown is installed
 if ! command -v gdown &> /dev/null; then
-    echo -e "${YELLOW}Installing gdown for Google Drive downloads...${NC}"
+    echo "Installing gdown for Google Drive downloads..."
     pip install gdown -q
 fi
 
@@ -46,13 +44,11 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo ""
-echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Step 1/3: Downloading Body Models & Sample Video${NC}"
-echo -e "${BLUE}=================================================${NC}"
+echo "Step 1/3: Downloading Body Models & Sample Video"
 echo ""
 
 # Download body_models folder and sample video
-echo -e "${BLUE}Downloading from Google Drive...${NC}"
+echo "Downloading from Google Drive..."
 TEMP_DIR=$(mktemp -d)
 cd "$TEMP_DIR"
 
@@ -60,7 +56,7 @@ if gdown --folder "https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q5
     echo ""
     echo -e "${GREEN}✓ Download completed!${NC}"
     echo ""
-    echo -e "${BLUE}Organizing files...${NC}"
+    echo "Organizing files..."
     
     # Find and move the body_models folder (it might be in a subfolder created by gdown)
     BODY_MODELS_DIR=$(find . -type d -name "body_models" | head -n 1)
@@ -72,7 +68,7 @@ if gdown --folder "https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q5
         # Fallback: find individual SMPL files
         find . -name "SMPL*.pkl" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/body_models/smpl/" \; 2>/dev/null || true
         find . -name "SMPL*.npz" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/body_models/smplx/" \; 2>/dev/null || true
-        echo -e "${YELLOW}⚠${NC} Body models organized (fallback method)"
+        echo -e "${RED}⚠${NC} Body models organized (fallback method)"
     fi
     
     # Find and move the sample video
@@ -83,7 +79,7 @@ if gdown --folder "https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q5
     fi
     
 else
-    echo -e "${YELLOW}⚠ Automatic download encountered issues${NC}"
+    echo -e "${RED}⚠ Automatic download encountered issues${NC}"
 fi
 
 # Clean up temp directory
@@ -91,13 +87,11 @@ cd "$SCRIPT_DIR"
 rm -rf "$TEMP_DIR"
 
 echo ""
-echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Step 2/3: Downloading GVHMR Checkpoints${NC}"
-echo -e "${BLUE}=================================================${NC}"
+echo "Step 2/3: Downloading GVHMR Checkpoints"
 echo ""
 
 # Download GVHMR checkpoints
-echo -e "${BLUE}Downloading GVHMR checkpoint files...${NC}"
+echo "Downloading GVHMR checkpoint files..."
 TEMP_DIR=$(mktemp -d)
 cd "$TEMP_DIR"
 
@@ -105,7 +99,7 @@ if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW
     echo ""
     echo -e "${GREEN}✓ Download completed!${NC}"
     echo ""
-    echo -e "${BLUE}Organizing files...${NC}"
+    echo "Organizing files..."
     
     # Find and move checkpoint files
     find . -name "gvhmr_siga24_release.ckpt" -exec cp {} "$SCRIPT_DIR/GVHMR/inputs/checkpoints/gvhmr/" \; 2>/dev/null || true
@@ -116,7 +110,7 @@ if gdown --folder "https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW
     
     echo -e "${GREEN}✓${NC} Checkpoints organized"
 else
-    echo -e "${YELLOW}⚠ Automatic download encountered issues${NC}"
+    echo -e "${RED}⚠ Automatic download encountered issues${NC}"
 fi
 
 # Clean up temp directory
@@ -125,9 +119,7 @@ rm -rf "$TEMP_DIR"
 
 # Verify all downloads
 echo ""
-echo -e "${BLUE}=================================================${NC}"
-echo -e "${BLUE}  Step 3/3: Verifying Downloads${NC}"
-echo -e "${BLUE}=================================================${NC}"
+echo "Step 3/3: Verifying Downloads"
 echo ""
 
 download_success=0
@@ -182,39 +174,11 @@ if [ $download_failed -eq 0 ]; then
     echo "Next step: Run ./verify_installation.sh"
     exit 0
 else
-    echo -e "${YELLOW}=================================================${NC}"
-    echo -e "${YELLOW}  ⚠ Some files need manual download${NC}"
-    echo -e "${YELLOW}=================================================${NC}"
+    echo -e "${RED}=================================================${NC}"
+    echo -e "${RED}  ⚠ Some files need manual download${NC}"
+    echo -e "${RED}=================================================${NC}"
     echo ""
     echo "Success: $download_success files"
     echo "Missing: $download_failed files"
-    echo ""
-    echo "Manual download instructions:"
-    echo ""
-    
-    if [ ! -f "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_NEUTRAL.pkl" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_MALE.pkl" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/body_models/smpl/SMPL_FEMALE.pkl" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_MALE.npz" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_FEMALE.npz" ]; then
-        echo "Body Models & Sample Video:"
-        echo "  Visit: https://drive.google.com/drive/folders/1J6lsvquyDFxZjjeSXo-Q57d82mKCVkn0"
-        echo "  Download the body_models folder → place in: GVHMR/inputs/checkpoints/"
-        echo "  Download intercept1.mp4 → place in: data/"
-        echo ""
-    fi
-    
-    if [ ! -f "GVHMR/inputs/checkpoints/gvhmr/gvhmr_siga24_release.ckpt" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/hmr2/epoch=10-step=25000.ckpt" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/vitpose/vitpose-h-multi-coco.pth" ] || \
-       [ ! -f "GVHMR/inputs/checkpoints/yolo/yolov8x.pt" ]; then
-        echo "GVHMR Checkpoints:"
-        echo "  Visit: https://drive.google.com/drive/folders/1eebJ13FUEXrKBawHpJroW0sNSxLjh9xD"
-        echo "  Download missing checkpoint files to their respective folders"
-        echo ""
-    fi
-    
-    echo "After downloading missing files, run: ./verify_installation.sh"
     exit 1
 fi

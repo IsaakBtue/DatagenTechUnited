@@ -13,7 +13,6 @@ cd "$SCRIPT_DIR"
 # Colors for output
 GREEN='\033[0;32m'
 RED='\033[0;31m'
-YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 pass_count=0
@@ -31,7 +30,7 @@ check_fail() {
 }
 
 check_warn() {
-    echo -e "   ${YELLOW}⚠${NC} $1"
+    echo -e "   ${RED}⚠${NC} $1"
 }
 
 # 1. Check conda environment
