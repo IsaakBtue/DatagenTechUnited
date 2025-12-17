@@ -28,17 +28,24 @@ cd DatagenTechUnited
 # 2. Setup environment
 ./setup_environment.sh
 
-# 3. Download all models (~10.5GB)
+# 3. Download SMPL and SMPLX body models manually
+# You need to sign up and download SMPL and SMPLX from their official websites:
+#   SMPL:  https://smpl.is.tue.mpg.de/
+#   SMPLX: https://smpl-x.is.tue.mpg.de/
+# Place the files in:
+#   GVHMR/inputs/checkpoints/body_models/smpl/SMPL_{GENDER}.pkl
+#   GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_{GENDER}.npz
+
+# 4. Download checkpoints and sample video
 ./download_checkpoints.sh
 
-# 4. Verify installation
+# 5. Verify installation
 ./verify_installation.sh
 
-# 5. Run pipeline with sample video
+# 6. Run pipeline with sample video
 ./run_pipeline.sh --video data/intercept1.mp4
 ```
 
-**That's it!** Your first robot motion will be generated in `outputs/` and `videos/`.
 
 ---
 
@@ -47,9 +54,9 @@ cd DatagenTechUnited
 **Pipeline:** `Video → GVHMR (pose extraction) → GMR (retargeting) → MuJoCo (visualization)`
 
 Takes a video of a human performing an action and generates:
-- ✅ Robot motion data (.pkl files)
-- ✅ Visualization video (.mp4)
-- ✅ Frame-by-frame joint angles and trajectories
+- Robot motion data (.pkl files)
+- Vsualization video (.mp4)
+- Frame-by-frame joint angles and trajectories
 
 ---
 
@@ -81,7 +88,7 @@ The script will:
 - Takes ~10-15 minutes
 
 <details>
-<summary><b>📋 Manual Environment Setup (Click to expand)</b></summary>
+<summary><b>Manual Environment Setup (Click to expand)</b></summary>
 
 If the automatic setup script doesn't work, you can set up the environment manually:
 
@@ -145,29 +152,59 @@ All imports should succeed and CUDA should be available (True).
 
 ### Step 2: Download Models
 
-Download all required models and checkpoints:
+There are two parts to the model setup:
+
+1. **SMPL and SMPLX body models (manual download, required)**
+2. **Checkpoints and sample video (scripted download)**
+
+#### 2.1 SMPL and SMPLX body models (manual)
+
+You must sign up and download the body models from the official sites:
+
+- SMPL: `https://smpl.is.tue.mpg.de/`
+- SMPLX: `https://smpl-x.is.tue.mpg.de/`
+
+After downloading, place the files in the following structure:
+
+```
+GVHMR/inputs/checkpoints/body_models/
+├── smpl/
+│   └── SMPL_{GENDER}.pkl    # Optional, used for rendering and evaluation
+└── smplx/
+    └── SMPLX_{GENDER}.npz   # Required, used for SMPLX motion and retargeting
+```
+
+Typical filenames are:
+
+- `GVHMR/inputs/checkpoints/body_models/smpl/SMPL_NEUTRAL.pkl`
+- `GVHMR/inputs/checkpoints/body_models/smpl/SMPL_MALE.pkl`
+- `GVHMR/inputs/checkpoints/body_models/smpl/SMPL_FEMALE.pkl`
+- `GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_NEUTRAL.npz`
+- `GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_MALE.npz`
+- `GVHMR/inputs/checkpoints/body_models/smplx/SMPLX_FEMALE.npz`
+
+SMPLX is required for the pipeline to run. SMPL is only needed for some rendering and evaluation utilities.
+
+#### 2.2 Checkpoints and sample video (script)
+
+Use the provided script to download the remaining checkpoints and the sample video:
 
 ```bash
 ./download_checkpoints.sh
 ```
 
-This automatically downloads:
-- **Body Models** (SMPL/SMPL-X) - ~500MB
-- **Sample Video** (intercept1.mp4) - ~50MB  
-- **GVHMR Checkpoints** - ~10GB
-- **Detection Models** (YOLO, VitPose, HMR2)
-
-**Total:** ~10.5GB
+This script downloads:
+- **Sample video** (intercept1.mp4) – about 50MB  
+- **GVHMR checkpoints and detector models** – about 10GB
 
 The script will:
 - Install `gdown` if needed
 - Download from Google Drive
 - Organize files automatically
 - Verify all downloads
-- Show what's missing (if anything)
 
 <details>
-<summary><b>📋 Manual Installation (Click to expand)</b></summary>
+<summary><b>Manual Installation (Click to expand)</b></summary>
 
 If the automatic download script doesn't work, you can download files manually:
 
@@ -395,24 +432,24 @@ DatagenTechUnited/
 ├── assets/booster_t1/           # Robot models
 ├── scripts/                     # Utility scripts
 │
-├── data/                        # 📁 Input videos go here
+├── data/                        # Input videos go here
 │   └── intercept1.mp4           # Sample video
 │
-├── outputs/                     # 📁 Motion data (.pkl)
-└── videos/                      # 📁 Visualization videos (.mp4)
+├── outputs/                     # Motion data (.pkl)
+└── videos/                      # Visualization videos (.mp4)
 ```
 
 ---
 
 ## Features
 
-✅ **Fully Automated** - 4 commands from clone to results  
-✅ **Complete Package** - Everything included except models  
-✅ **Auto-Download** - Single script downloads all models  
-✅ **Sample Video** - Test immediately with included example  
-✅ **Production Ready** - Tested and verified workflow  
-✅ **Real-time Capable** - 35-70 FPS retargeting speed  
-✅ **Booster T1 Optimized** - Tuned for T1 robot kinematics  
+ **Fully Automated** - 4 commands from clone to results  
+ **Complete Package** - Everything included except models  
+ **Auto-Download** - Single script downloads all models  
+ **Sample Video** - Test immediately with included example  
+ **Production Ready** - Tested and verified workflow  
+ **Real-time Capable** - 35-70 FPS retargeting speed  
+ **Booster T1 Optimized** - Tuned for T1 robot kinematics  
 
 ---
 
@@ -469,13 +506,6 @@ This package integrates:
 
 ---
 
-## Version
-
-**Version:** 2.0  
-**Status:** ✅ Production Ready  
-**Last Updated:** November 2025
-
----
 
 ## Support
 
