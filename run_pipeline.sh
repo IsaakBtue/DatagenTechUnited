@@ -190,7 +190,7 @@ print_info "  Robot motion saved: $OUTPUT_PKL"
 
 # Step 3: Summary
 print_info "===================================================="
-print_info "Pipeline Complete! 🎉"
+print_info "Pipeline Complete"
 print_info "===================================================="
 print_info "Outputs:"
 print_info "  1. GVHMR results: $GVHMR_OUTPUT_DIR/"
