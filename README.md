@@ -441,18 +441,6 @@ DatagenTechUnited/
 
 ---
 
-## Features
-
- **Fully Automated** - 4 commands from clone to results  
- **Complete Package** - Everything included except models  
- **Auto-Download** - Single script downloads all models  
- **Sample Video** - Test immediately with included example  
- **Production Ready** - Tested and verified workflow  
- **Real-time Capable** - 35-70 FPS retargeting speed  
- **Booster T1 Optimized** - Tuned for T1 robot kinematics  
-
----
-
 ## Credits
 
 This package integrates:
