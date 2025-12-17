@@ -453,40 +453,6 @@ DatagenTechUnited/
 
 ---
 
-## Technical Details
-
-**GVHMR (Human Pose Extraction):**
-- Extracts SMPL-X parameters from monocular video
-- 3D pose estimation with global trajectory
-- Handles occlusions and complex motions
-
-**GMR (Motion Retargeting):**
-- Inverse kinematics-based retargeting
-- Joint limit enforcement
-- Smooth trajectory generation
-
-**Supported Robots:**
-- Booster T1 (primary)
-- Unitree G1
-- Unitree H1
-- And more (see `assets/` folder)
-
----
-
-## Performance
-
-**Processing Speed:**
-- GVHMR: 10-20 FPS (depends on GPU)
-- GMR: 35-70 FPS (real-time capable)
-- Total: ~2-5 minutes for 30-second video
-
-**Accuracy:**
-- Joint angle accuracy: ±5 degrees
-- Trajectory tracking: <2cm average error
-- Maintains balance and stability
-
----
-
 ## Credits
 
 This package integrates:
@@ -497,23 +463,3 @@ This package integrates:
 
 ---
 
-## License
-
-- GMR: MIT License
-- GVHMR: Check their repository
-- Robot models: Check manufacturer
-- This package: Use responsibly
-
----
-
-
-## Support
-
-**Installation issues?** Run `./verify_installation.sh`  
-**Dependency conflicts?** Run `./fix_dependencies.sh`  
-**Pipeline fails?** Try the sample video first  
-**Need more help?** Check error messages - they're descriptive!
-
----
-
-**Ready to start?** Run the 4 commands above! 🚀
